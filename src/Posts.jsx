@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const PostList = () => {
+const Posts = () => {
     const [posts, setPosts] = useState([])
     const [newPost, setNewPost] = useState([''])
-}
 
     useEffect (() => {
         axios.get('http://127.0.0.1:8000/')
@@ -28,8 +27,9 @@ const PostList = () => {
             ))}
         </div>
     );
-
-
-
     
+}
+
+
+
 export default Posts

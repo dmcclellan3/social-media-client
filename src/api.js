@@ -3,6 +3,7 @@ import axios from 'axios'
 const baseUrl = 'http://127.0.0.1:8000'
 
 export const createUser = ({ username, password, firstName, lastName }) => {
+    console.log('CREATE USER: ', username, password, firstName, lastName)
     axios({
         method: 'post',
         url: `${baseUrl}/create-user/`,
@@ -27,7 +28,7 @@ export const getToken = ({ auth, username, password }) => {
     }) .then(response => {
         console.log('GET TOKEN RESPONSE: ', response)
         auth.setAccessToken(response.data.access)
-        fetchBook({ auth : {accessToken : response.data.access}})
+        fetchProfile({ auth : {accessToken : response.data.access}})
     })
     .catch(error => console.log('Error: ', error))
 }
@@ -45,14 +46,16 @@ export const fetchUser = ({ auth }) => {
     }).catch(error => console.log('ERROR: ', error))
 }
 
-export const fetchBook = ({ auth }) => {
+export const fetchProfile = ({ auth }) => {
     axios({
         method: 'get',
-        url:`${baseUrl}/Book/`,
+        url:`${baseUrl}/posts/`,
         headers: {
             Authorization: `Bearer ${auth.accessToken}`
         }
     }).then(response => {
-        console.log('FETCH BOOK RESPONSE: ', response)
+        console.log('FETCH PROFILE RESPONSE: ', response)
     }).catch(error => console.log('ERROR: ', error))
 }
+
+

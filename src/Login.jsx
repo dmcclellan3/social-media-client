@@ -3,6 +3,7 @@ import { AuthContext } from "./authContext"
 import { useState } from 'react'
 import { getToken, createUser } from './api'
 import { useNavigate } from "react-router-dom"
+// import { useHistory } from 'react-router-dom'
 
 const CreateUser = () => {
   const [username, setUsername] = useState('')
@@ -58,11 +59,30 @@ function Login() {
   const { auth } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+//   const history = useHistory()
   const navigate = useNavigate()
 
 const submit = () => {
   getToken({ auth, username, password })
 }
+
+const handleLogin = async (e) => {
+    e.preventDefault()
+    const response = await fetch('/api/login', {
+        method: 'Post',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      history.push('/home');
+    } else {
+      alert('Login failed');
+    }
+  };
+
 
 
   return (

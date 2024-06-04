@@ -11,15 +11,17 @@ import './index.css'
 import './App.css'
 
 import App from './App'
+import Header from './Header'
 import Login from './Login'
 import ErrorPage from './ErrorPage'
+import { useState } from 'react'
 
 import { AuthContext } from './authContext'
 
 function Layout() {
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       <div id='page-content'>
         <Outlet />
       </div>
@@ -64,6 +66,8 @@ const AuthContextProvider = ({ children }) => {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthContextProvider>
+      <RouterProvider router={router} />
+    </AuthContextProvider>
   </React.StrictMode>,
 )
