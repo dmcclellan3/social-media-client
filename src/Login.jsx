@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { AuthContext } from "./authContext"
 import { useState } from 'react'
 import { getToken, createUser } from './api'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 // import { useHistory } from 'react-router-dom'
 
 const CreateUser = () => {
@@ -59,35 +59,34 @@ function Login() {
   const { auth } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-//   const history = useHistory()
   const navigate = useNavigate()
+  const location = useLocation()
 
 const submit = () => {
-  getToken({ auth, username, password })
+  getToken({ auth, username, password }).then(() => navigate('/posts'))
 }
 
-const handleLogin = async (e) => {
-    e.preventDefault()
-    const response = await fetch('/api/login', {
-        method: 'Post',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
+// const handleLogin = async (e) => {
+//     e.preventDefault()
+//     const response = await fetch('http://127.0.0.1:8000/profile/', {
+//         method: 'GET',
+//         headers: {
+//             Authorization: `Bearer ${auth.accessToken}`
+//         }
+//     });
 
-    if (response.ok) {
-      history.push('/home');
-    } else {
-      alert('Login failed');
-    }
-  };
-
+//     if (response.ok) {
+//       navigate('/posts');
+//     } else {
+//       alert('Login failed');
+//     }
+//     <handleLogin/>
 
 
   return (
     <div className="p-5">
       <h1>Login</h1>
+      
       <div>
         <div>Username:</div>
         <input
@@ -100,12 +99,14 @@ const handleLogin = async (e) => {
         <input
         onChange={e => setPassword(e.target.value)}
         value={password}
+        type="password"
         />
         <br />
         </div>
         <div style={{ marginTop: 20 }}>
           <button onClick={() => submit()}>Submit</button>
         </div>
+        
       <CreateUser />
     </div>
 

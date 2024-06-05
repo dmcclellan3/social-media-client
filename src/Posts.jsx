@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import { getPosts } from './api';
+import { AuthContext } from './authContext';
 
 const Posts = () => {
     const [posts, setPosts] = useState([])
-    const [newPost, setNewPost] = useState([''])
-
+    const { auth } = useContext(AuthContext)
     useEffect (() => {
-        axios.get('http://127.0.0.1:8000/')
+       getPosts ({ auth })
         .then(response => {
+            console.log('POSTS RESPONSE: ', response)
             setPosts(response.data)
         })
-        .catch(error => {
-            console.error('Error retrieving posts!', error)
-        })
-
     }, []);
 
     return (
@@ -24,7 +21,7 @@ const Posts = () => {
                     <h2>{post.user.username}</h2>
                     <p>{post.content}</p>
                 </div>
-            ))}
+            ))} 
         </div>
     );
     

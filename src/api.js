@@ -5,7 +5,7 @@ const baseUrl = 'http://127.0.0.1:8000'
 export const createUser = ({ username, password, firstName, lastName }) => {
     console.log('CREATE USER: ', username, password, firstName, lastName)
     axios({
-        method: 'post',
+        method: 'POST',
         url: `${baseUrl}/create-user/`,
         data: {
             username,
@@ -22,7 +22,7 @@ export const createUser = ({ username, password, firstName, lastName }) => {
 
 export const getToken = ({ auth, username, password }) => {
     console.log('GET TOKEN: ', auth, username, password)
-    axios.post(`${baseUrl}/token/`, {
+    return axios.post(`${baseUrl}/token/`, {
         username,
         password,
     }) .then(response => {
@@ -34,22 +34,22 @@ export const getToken = ({ auth, username, password }) => {
 }
 
 
-export const fetchUser = ({ auth }) => {
-    axios({
-        method: 'get',
-        url:`${baseUrl}/profile/`,
-        headers: {
-            Authorization: `Bearer ${auth.accessToken}`
-        }
-    }).then(response => {
-        console.log('FETCH USER RESPONSE: ', response)
-    }).catch(error => console.log('ERROR: ', error))
-}
+// export const fetchUser = ({ auth }) => {
+//     axios({
+//         method: 'get',
+//         url:`${baseUrl}/profile/`,
+//         headers: {
+//             Authorization: `Bearer ${auth.accessToken}`
+//         }
+//     }).then(response => {
+//         console.log('FETCH USER RESPONSE: ', response)
+//     }).catch(error => console.log('ERROR: ', error))
+// }
 
 export const fetchProfile = ({ auth }) => {
     axios({
-        method: 'get',
-        url:`${baseUrl}/posts/`,
+        method: 'GET',
+        url:`${baseUrl}/profile/`,
         headers: {
             Authorization: `Bearer ${auth.accessToken}`
         }
@@ -57,5 +57,17 @@ export const fetchProfile = ({ auth }) => {
         console.log('FETCH PROFILE RESPONSE: ', response)
     }).catch(error => console.log('ERROR: ', error))
 }
+
+export const getPosts = ({ auth }) => {
+    console.log('GET POSTS: AUTH: ', auth.accessToken)
+    return axios({
+        method: 'GET',
+        url:`${baseUrl}/posts/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        }
+    })
+}
+
 
 

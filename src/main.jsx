@@ -14,6 +14,7 @@ import App from './App'
 import Header from './Header'
 import Login from './Login'
 import ErrorPage from './ErrorPage'
+import Posts from './Posts'
 import { useState } from 'react'
 
 import { AuthContext } from './authContext'
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />
+      },
+      {
+        path: '/posts',
+        element: <Posts />
       },
       
     ]
