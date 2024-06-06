@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { getPosts } from './api';
 import { AuthContext } from './authContext';
-import { createPost } from './api';
+import { createPost, deletePost } from './api';
 
 const Posts = () => {
     const [posts, setPosts] = useState([])
     const [newPost, setNewPost] = useState('')
+    const [cutPost, setCutPost] = useState([])
     const { auth } = useContext(AuthContext)
 
     useEffect (() => {
@@ -30,6 +31,20 @@ const Posts = () => {
             console.error('Error creating post:', error);
         }
     };
+
+    const handleDeletePost = (postId) => {
+        const response = deletePost({ auth, postId })
+            .then(() => {
+                setPosts(posts.filter(post => post.id !== postId));
+                console.log('POST DELETED!');
+                return response
+            })
+            .catch(error => {
+                console.log('ERROR DELETING POST: ', error);
+            });
+    };
+
+    
     
     // const CreatePost = ({ auth }) => {
     //     const [content, setContent] = useState('')
@@ -50,7 +65,7 @@ const Posts = () => {
 
 
     return (
-        <div>
+        <div className='container'>
             <h1>Posts</h1>
             <div>
                 <input
@@ -66,9 +81,11 @@ const Posts = () => {
             {posts && posts.map(post => {
                 console.log('POST RESPONSE: ', post)
                 return(
-                    <div key={post.id}>
+                    <div className='post' key={post.id}>
                         <h2>{post.user.username}</h2>
                         <p>{post.content}</p>
+                        <button onClick={() => handleDeletePost(post.id)}>Delete</button>
+
                     </div>
                 )
             })} 

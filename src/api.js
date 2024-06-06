@@ -74,8 +74,13 @@ export const deletePost = ({ auth, postId }) => {
         url: `${baseUrl}/posts/${postId}/`,
         headers: {
             Authorization: `Bearer ${auth.accessToken}`,
-        },
-    });
+        }
+    })
+    .then(response => {
+        console.log('DELETE POST RESPONSE: ', response)
+        return response
+    })
+    .catch(error => console.log('ERROR: ', error))
 };
 
 
