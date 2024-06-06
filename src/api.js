@@ -34,17 +34,7 @@ export const getToken = ({ auth, username, password }) => {
 }
 
 
-// export const fetchUser = ({ auth }) => {
-//     axios({
-//         method: 'get',
-//         url:`${baseUrl}/profile/`,
-//         headers: {
-//             Authorization: `Bearer ${auth.accessToken}`
-//         }
-//     }).then(response => {
-//         console.log('FETCH USER RESPONSE: ', response)
-//     }).catch(error => console.log('ERROR: ', error))
-// }
+
 
 export const fetchProfile = ({ auth }) => {
     axios({
@@ -57,6 +47,38 @@ export const fetchProfile = ({ auth }) => {
         console.log('FETCH PROFILE RESPONSE: ', response)
     }).catch(error => console.log('ERROR: ', error))
 }
+
+export const createPost = ({ auth, content }) => {
+    console.log('CREATE POST: ', auth, content)
+    return axios({
+        method: 'POST',
+        url: `${baseUrl}/posts/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            content
+        }
+    })
+    .then(response => {
+        console.log('CREATE POST RESPONSE: ', response)
+        return response
+    })
+    .catch(error => console.log('ERROR: ', error))
+
+}
+
+export const deletePost = ({ auth, postId }) => {
+    return axios({
+        method: 'DELETE',
+        url: `${baseUrl}/posts/${postId}/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+        },
+    });
+};
+
+
 
 export const getPosts = ({ auth }) => {
     console.log('GET POSTS: AUTH: ', auth.accessToken)

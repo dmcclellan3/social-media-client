@@ -3,6 +3,7 @@ import './App.css'
 import Login from './Login'
 import Posts from './Posts'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import CreatePost from './Posts'
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   return (
     <div className="p-5">
       <h1>Your Profile</h1>
+      <CreatePost />
       <ul>
         {posts.map(post => (
           <li key={post.id}>{post.title} by {post.author}</li>
