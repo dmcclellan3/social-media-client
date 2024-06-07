@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getPosts } from './api';
+import { getPosts, updatePost } from './api';
 import { AuthContext } from './authContext';
 import { createPost, deletePost } from './api';
 
 const Posts = () => {
     const [posts, setPosts] = useState([])
     const [newPost, setNewPost] = useState('')
-    const [cutPost, setCutPost] = useState([])
+    // const [cutPost, setCutPost] = useState([])
     const { auth } = useContext(AuthContext)
 
     useEffect (() => {
@@ -32,6 +32,18 @@ const Posts = () => {
         }
     };
 
+    const handleEditPost = (post) => {
+        setEditPostId(post.id);
+        setEditContent(post.content)
+    }
+
+    const handleUpdatePost = (postId) => {
+        const response = updatePost({ auth, postId })
+        
+    }
+
+    
+
     const handleDeletePost = (postId) => {
         const response = deletePost({ auth, postId })
             .then(() => {
@@ -44,51 +56,44 @@ const Posts = () => {
             });
     };
 
-    
-    
-    // const CreatePost = ({ auth }) => {
-    //     const [content, setContent] = useState('')
-
-    //     const handlePostSubmit = (e) => {
-    //         createPost({ auth, user, content, created_at })
-    //         .then(response => {
-    //             console.log('POST CREATED!')
-    //             setContent('')
-    //         })
-    //         .catch(error => {
-    //             console.log('ERROR CREATING POST: ', error)
-                
-    //         })
-        
-    //     }
-    // }
-
 
     return (
-        <div className='container'>
-            <h1>Posts</h1>
-            <div>
-                <input
-                type='text'
-                value={newPost}
-                onChange={handleNewPost} 
-                placeholder="What's on your mind?"
-                />
-                <br />
+        <div className='feed-container'>
+            <nav className="nav-bar">
+                <a href="/posts">Posts</a>
+                <a href="/login">Login</a>
+                <a href="/">Profile</a>
+            </nav>
+            <div className="create-post-container">
+                <h3>Create a Post</h3>
+                <div>
+                    <input
+                    type='text'
+                    value={newPost}
+                    onChange={handleNewPost} 
+                    placeholder="What's on your mind?"
+                    />
+                </div>
                 <br />
                 <button onClick={handlePostSubmit}>Post</button>
             </div>
+            <div className='posts-container'>
             {posts && posts.map(post => {
                 console.log('POST RESPONSE: ', post)
                 return(
                     <div className='post' key={post.id}>
-                        <h2>{post.user.username}</h2>
+                        {/* <h2>{post.user.username}</h2> */}
+                        <h5>{post.username}</h5>
                         <p>{post.content}</p>
+                        <span>{post.created_at}</span>
+                        <div className='post-actions'>
                         <button onClick={() => handleDeletePost(post.id)}>Delete</button>
-
+                        <button onClick={() => handleEditPost(post.id)}>Edit</button>
+                        </div>
                     </div>
                 )
             })} 
+        </div>
         </div>
     );
     

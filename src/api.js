@@ -68,6 +68,24 @@ export const createPost = ({ auth, content }) => {
 
 }
 
+export const updatePost = ({ auth, postId, content }) => {
+    return axios({
+        method: 'PUT',
+        url: `${baseUrl}/posts/${postId}/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+        },
+        data: {
+            content,
+        },
+    })
+    .then(response => {
+        console.log('UPDATE POST: ', response)
+        return response
+    })
+    .catch(error => console.log('ERROR: ', error))
+};
+
 export const deletePost = ({ auth, postId }) => {
     return axios({
         method: 'DELETE',
