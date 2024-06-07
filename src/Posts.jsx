@@ -1,32 +1,34 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getPosts, updatePost } from './api';
+import { getPosts, updatePost, createPost, deletePost } from './api';
 import { AuthContext } from './authContext';
-import { createPost, deletePost } from './api';
 
 const Posts = () => {
-    const [posts, setPosts] = useState([])
-    const [newPost, setNewPost] = useState('')
-    // const [cutPost, setCutPost] = useState([])
-    const { auth } = useContext(AuthContext)
+    const [posts, setPosts] = useState([]);
+    const [newPost, setNewPost] = useState('');
+    const [editPostId, setEditPostId] = useState(null);
+    const [editContent, setEditContent] = useState('');
+    const { auth } = useContext(AuthContext);
 
-    useEffect (() => {
-       getPosts ({ auth })
-        .then(response => {
-            console.log('POSTS RESPONSE: ', response)
-            setPosts(response.data)
-        })
-    }, []);
+    useEffect(() => {
+        getPosts({ auth })
+            .then(response => {
+                console.log('POSTS RESPONSE: ', response);
+                setPosts(response.data);
+            })
+            .catch(error => console.error('Error fetching posts:', error));
+    }, [auth]);
 
     const handleNewPost = (e) => {
         setNewPost(e.target.value);
     };
-    
-    const handlePostSubmit = async () => {
+
+    const handlePostSubmit = async (e) => {
+        e.preventDefault();
         try {
             const response = await createPost({ auth, content: newPost });
             console.log('CREATE POST RESPONSE: ', response);
-            setPosts(response.data); 
-            setNewPost(''); 
+            setPosts([response.data, ...posts]);
+            setNewPost('');
         } catch (error) {
             console.error('Error creating post:', error);
         }
@@ -34,31 +36,43 @@ const Posts = () => {
 
     const handleEditPost = (post) => {
         setEditPostId(post.id);
-        setEditContent(post.content)
-    }
-
-    const handleUpdatePost = (postId) => {
-        const response = updatePost({ auth, postId })
-        
-    }
-
-    
-
-    const handleDeletePost = (postId) => {
-        const response = deletePost({ auth, postId })
-            .then(() => {
-                setPosts(posts.filter(post => post.id !== postId));
-                console.log('POST DELETED!');
-                return response
-            })
-            .catch(error => {
-                console.log('ERROR DELETING POST: ', error);
-            });
+        setEditContent(post.content);
     };
 
+    const handleUpdatePost = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await updatePost({ auth, postId: editPostId, content: editContent });
+            console.log('UPDATE POST RESPONSE: ', response);
+            setPosts(posts.map(post => (post.id === editPostId ? response.data : post)));
+            setEditPostId(null);
+            setEditContent('');
+        } catch (error) {
+            console.error('Error updating post:', error);
+        }
+    };
+
+    const handleEditContentChange = (e) => {
+        setEditContent(e.target.value);
+    };
+
+    const handleDeletePost = async (postId) => {
+        try {
+            await deletePost({ auth, postId });
+            setPosts(posts.filter(post => post.id !== postId));
+            console.log('POST DELETED!');
+        } catch (error) {
+            console.error('ERROR DELETING POST: ', error);
+        }
+    };
+
+    const postDate = (dateString) => {
+        const format = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, format);
+    };
 
     return (
-        <div className='feed-container'>
+        <div className="feed-container">
             <nav className="nav-bar">
                 <a href="/posts">Posts</a>
                 <a href="/login">Login</a>
@@ -68,37 +82,42 @@ const Posts = () => {
                 <h3>Create a Post</h3>
                 <div>
                     <input
-                    type='text'
-                    value={newPost}
-                    onChange={handleNewPost} 
-                    placeholder="What's on your mind?"
+                        type='text'
+                        value={newPost}
+                        onChange={handleNewPost}
+                        placeholder="What's on your mind?"
                     />
                 </div>
                 <br />
                 <button onClick={handlePostSubmit}>Post</button>
             </div>
-            <div className='posts-container'>
-            {posts && posts.map(post => {
-                console.log('POST RESPONSE: ', post)
-                return(
-                    <div className='post' key={post.id}>
-                        {/* <h2>{post.user.username}</h2> */}
+            <div className="posts-container">
+                {posts && posts.map(post => (
+                    <div className="post" key={post.id}>
                         <h5>{post.username}</h5>
-                        <p>{post.content}</p>
-                        <span>{post.created_at}</span>
-                        <div className='post-actions'>
-                        <button onClick={() => handleDeletePost(post.id)}>Delete</button>
-                        <button onClick={() => handleEditPost(post.id)}>Edit</button>
+                        {editPostId === post.id ? (
+                            <form onSubmit={handleUpdatePost} className="edit-post-form">
+                                <textarea
+                                    value={editContent}
+                                    onChange={handleEditContentChange}
+                                    placeholder="Update your post"
+                                    />
+                                <button type="submit">Update</button>
+                                <button type="button" onClick={() => setEditPostId(null)}>Cancel</button>
+                            </form>
+                        ) : (
+                            <p>{post.content}</p>
+                            )}
+                            <div>{postDate(post.created_at)}</div>
+                        <div className="post-actions">
+                            <button onClick={() => handleDeletePost(post.id)}>Delete</button>
+                            <button onClick={() => handleEditPost(post)}>Edit</button>
                         </div>
                     </div>
-                )
-            })} 
-        </div>
+                ))}
+            </div>
         </div>
     );
-    
-}
+};
 
-
-
-export default Posts
+export default Posts;
