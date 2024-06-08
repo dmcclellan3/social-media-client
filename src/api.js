@@ -76,7 +76,7 @@ export const createPost = ({ auth, content }) => {
 
 }
 
-//Issue with something at this point, more than likely on the backend 
+
 //But similar to create this function is intended to send a different 
 //request "PUT" to update a previous post 
 

@@ -9,6 +9,8 @@ const Posts = () => {
     const [editContent, setEditContent] = useState('');
     const { auth } = useContext(AuthContext);
 
+// Fetches post from api, logs response and sets the posts from the data stored at the end point. 
+
     useEffect(() => {
         getPosts({ auth })
             .then(response => {
@@ -18,9 +20,15 @@ const Posts = () => {
             .catch(error => console.error('Error fetching posts:', error));
     }, [auth]);
 
+    // Updates the screen with a new post entered that is called below 
+
     const handleNewPost = (e) => {
         setNewPost(e.target.value);
     };
+
+    // Handles the submission of a new post 
+    // calls createPost function from api 
+    // sets the post and logs any errors 
 
     const handlePostSubmit = async (e) => {
         e.preventDefault();
@@ -34,19 +42,24 @@ const Posts = () => {
         }
     };
 
+    //edits post ID and content 
+
     const handleEditPost = (post) => {
         setEditPostId(post.id);
         setEditContent(post.content);
     };
+
+    //Handles form submission to update, calls the API endpoint 
+    //
 
     const handleUpdatePost = async (e) => {
         e.preventDefault();
         try {
             const response = await updatePost({ auth, postId: editPostId, content: editContent });
             console.log('UPDATE POST RESPONSE: ', response);
-            setPosts(posts.map(post => (post.id === editPostId ? response.data : post)));
-            setEditPostId(null);
-            setEditContent('');
+            setPosts(posts.map(post => (post.id === editPostId ? response.data : post))); //checking if the post ID matches the edit post ID if it doesn't match it leaves the post unchanged 
+            setEditPostId(null); //clears the edit post ID that nothing is being edited.  Returns the component to a default state 
+            setEditContent(''); //resets the edit form to an empty string 
         } catch (error) {
             console.error('Error updating post:', error);
         }
@@ -56,20 +69,26 @@ const Posts = () => {
         setEditContent(e.target.value);
     };
 
+
+    // calls delete from API and removes based off the Post ID 
     const handleDeletePost = async (postId) => {
         try {
             await deletePost({ auth, postId });
-            setPosts(posts.filter(post => post.id !== postId));
+            setPosts(posts.filter(post => post.id !== postId));  
             console.log('POST DELETED!');
         } catch (error) {
             console.error('ERROR DELETING POST: ', error);
         }
     };
 
+    //allows for date format on post 
+
     const postDate = (dateString) => {
-        const format = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        const format = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }; 
         return new Date(dateString).toLocaleDateString(undefined, format);
     };
+
+    //page render 
 
     return (
         <div className="feed-container">

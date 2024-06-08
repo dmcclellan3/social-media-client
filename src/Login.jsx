@@ -3,7 +3,6 @@ import { AuthContext } from "./authContext"
 import { useState } from 'react'
 import { getToken, createUser } from './api'
 import { useNavigate, useLocation } from "react-router-dom"
-// import { useHistory } from 'react-router-dom'
 
 const CreateUser = () => {
   const [username, setUsername] = useState('')
@@ -77,22 +76,6 @@ function Login() {
 const submit = () => {
   getToken({ auth, username, password }).then(() => navigate('/posts'))
 }
-
-// const handleLogin = async (e) => {
-//     e.preventDefault()
-//     const response = await fetch('http://127.0.0.1:8000/profile/', {
-//         method: 'GET',
-//         headers: {
-//             Authorization: `Bearer ${auth.accessToken}`
-//         }
-//     });
-
-//     if (response.ok) {
-//       navigate('/posts');
-//     } else {
-//       alert('Login failed');
-//     }
-//     <handleLogin/>
 
 
   return (
